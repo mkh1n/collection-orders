@@ -21,13 +21,25 @@ async function init() {
     showLogin();
   }
 }
+function showLoading(message = 'Загрузка...') {
+  const overlay = document.getElementById('loadingOverlay');
+  const msg = document.getElementById('loadingMessage');
+  msg.textContent = message;
+  overlay.style.display = 'flex';
+}
 
+function hideLoading() {
+  const overlay = document.getElementById('loadingOverlay');
+  overlay.style.display = 'none';
+}
 function showLogin() {
+  hideLoading();
   loginBox.style.display = 'block';
   mainBox.style.display = 'none';
 }
 
 function showMain() {
+  hideLoading();
   loginBox.style.display = 'none';
   mainBox.style.display = 'block';
 }
@@ -36,6 +48,7 @@ loginBtn.addEventListener('click', async () => {
   const pass = passwordInput.value.trim();
   if (!pass) return alert('Введите пароль');
   try {
+    showLoading('Связываюсь с сервером...');
     const data = await apiLogin(pass);
     token = data.token;
     localStorage.setItem('token', token);
@@ -45,6 +58,8 @@ loginBtn.addEventListener('click', async () => {
   } catch (err) {
     console.error(err);
     alert('Ошибка входа');
+  } finally{
+    hideLoading();
   }
 });
 
@@ -55,7 +70,9 @@ logoutBtn.addEventListener('click', () => {
 });
 
 async function loadPage(page = 1) {
+  hideLoading();
   try {
+    showLoading('Загружаю заказы...');
     const data = await fetchPurchases(token, page, perPage);
     renderOrders(data.orders || []);
     renderPagination(data.totalPages || 1, page);
@@ -66,6 +83,8 @@ async function loadPage(page = 1) {
     token = null;
     localStorage.removeItem('token');
     showLogin();
+  } finally {
+    hideLoading();
   }
 }
 
@@ -190,6 +209,7 @@ ordersEl.addEventListener('click', async (e) => {
 
 function productHtml(it) {
   const name = escapeHtml(it.Name || '(без названия)');
+  const SKU = escapeHtml(it.SKU || '');
   const size = escapeHtml(it.Size || '');
   const amount = (it.Amount != null) ? String(it.Amount) : '';
   const price = formatMoney(it.Price * 100);
@@ -201,7 +221,7 @@ function productHtml(it) {
       <div class="card-body d-flex">
         <div style="flex:1">
           <h6 class="mb-1">${name}</h6>
-          <div class="small text-muted">Размер: ${size} &nbsp; Кол-во: ${amount}</div>
+          <div class="small text-muted">Размер: ${size} &nbsp; Кол-во: ${amount} &nbsp; Артикул: ${SKU}</div>
           <div class="mt-1">Цена: ${price}</div>
           <a href="${productLink}" target="_blank" rel="noopener noreferrer">Открыть товар</a>
         </div>
