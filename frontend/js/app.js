@@ -79,7 +79,6 @@ function renderOrders(orders) {
   orders.forEach(o => {
     const item = document.createElement('div');
     item.className = 'list-group-item mb-2';
-    console.log(o)
     const name = escapeHtml((o.Name || '') + ' ' + (o.SecondName || '')).trim();
     const email = escapeHtml(o.Email || '');
     const phone = escapeHtml(o.Phone || '');
@@ -91,7 +90,7 @@ function renderOrders(orders) {
       : (o.PriceForSP1 > 0 ? o.PriceForSP1 : 0);
 
     const price = priceValue > 0 ? formatMoney(priceValue) : '';
-    
+
     const created = o.Created ? new Date(o.Created).toLocaleString() : '';
 
     item.innerHTML = `
