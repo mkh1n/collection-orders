@@ -1,6 +1,5 @@
 // Базовый адрес API — измени на URL твоего бэкенда (Render, Railway и т.д.)
-const API_BASE = 'https://collection-orders.onrender.com/';
-
+const API_BASE = 'https://collection-orders.onrender.com';
 
 export async function login(password) {
 const res = await fetch(`${API_BASE}/api/auth/login`, {
