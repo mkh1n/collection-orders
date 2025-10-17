@@ -1,5 +1,5 @@
 // Базовый адрес API — измени на URL твоего бэкенда (Render, Railway и т.д.)
-const API_BASE = 'http://localhost:3000';
+const API_BASE = 'https://collection-orders.onrender.com/';
 
 
 export async function login(password) {
